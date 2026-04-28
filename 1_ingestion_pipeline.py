@@ -1,7 +1,8 @@
 import os
+import shutil
 from langchain_community.document_loaders import TextLoader, DirectoryLoader
 from langchain_text_splitters import CharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_nomic import NomicEmbeddings
 from langchain_chroma import Chroma
 from dotenv import load_dotenv
 
@@ -70,8 +71,12 @@ def split_documents(documents, chunk_size=800, chunk_overlap=0):
 def create_vector_store(chunks, persist_directory="db/chroma_db"):
     """Create and persist ChromaDB vector store"""
     print("Creating embeddings and storing in ChromaDB...")
-        
-    embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+
+    if os.path.exists(persist_directory):
+        print(f"Removing existing vector store at {persist_directory}...")
+        shutil.rmtree(persist_directory)
+
+    embedding_model = NomicEmbeddings(model="nomic-embed-text-v1.5")
     
     # Create ChromaDB vector store
     print("--- Creating vector store ---")
