@@ -22,8 +22,6 @@ db = Chroma(
 # Search for relevant documents
 query = "How much did Microsoft pay to acquire GitHub?"
 
-retriever = db.as_retriever(search_kwargs={"k": 5})
-
 retriever = db.as_retriever(
     search_type="similarity_score_threshold",
     search_kwargs={

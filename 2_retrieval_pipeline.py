@@ -18,8 +18,6 @@ db = Chroma(
 # Search for relevant documents
 query = "What was NVIDIA's first graphics accelerator called?"
 
-retriever = db.as_retriever(search_kwargs={"k": 5})
-
 retriever = db.as_retriever(
     search_type="similarity_score_threshold",
     search_kwargs={
