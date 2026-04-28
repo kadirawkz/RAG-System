@@ -2,9 +2,9 @@ import os
 import shutil
 from langchain_community.document_loaders import TextLoader, DirectoryLoader
 from langchain_text_splitters import CharacterTextSplitter
-from langchain_nomic import NomicEmbeddings
 from langchain_chroma import Chroma
 from dotenv import load_dotenv
+from langchain_huggingface import HuggingFaceEmbeddings
 
 load_dotenv()
 
@@ -52,18 +52,18 @@ def split_documents(documents, chunk_size=800, chunk_overlap=0):
     
     chunks = text_splitter.split_documents(documents)
     
-    # if chunks:
+    if chunks:
     
-    #     for i, chunk in enumerate(chunks[:5]):
-    #         print(f"\n--- Chunk {i+1} ---")
-    #         print(f"Source: {chunk.metadata['source']}")
-    #         print(f"Length: {len(chunk.page_content)} characters")
-    #         print(f"Content:")
-    #         print(chunk.page_content)
-    #         print("-" * 50)
+        for i, chunk in enumerate(chunks[:5]):
+            print(f"\n--- Chunk {i+1} ---")
+            print(f"Source: {chunk.metadata['source']}")
+            print(f"Length: {len(chunk.page_content)} characters")
+            print(f"Content:")
+            print(chunk.page_content)
+            print("-" * 50)
         
-    #     if len(chunks) > 5:
-    #         print(f"\n... and {len(chunks) - 5} more chunks")
+        if len(chunks) > 5:
+            print(f"\n... and {len(chunks) - 5} more chunks")
     
     return chunks
 
@@ -76,7 +76,7 @@ def create_vector_store(chunks, persist_directory="db/chroma_db"):
         print(f"Removing existing vector store at {persist_directory}...")
         shutil.rmtree(persist_directory)
 
-    embedding_model = NomicEmbeddings(model="nomic-embed-text-v1.5")
+    embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     
     # Create ChromaDB vector store
     print("--- Creating vector store ---")

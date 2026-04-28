@@ -1,13 +1,13 @@
 from langchain_chroma import Chroma
-from langchain_nomic import NomicEmbeddings
 from dotenv import load_dotenv
+from langchain_huggingface import HuggingFaceEmbeddings
 
 load_dotenv()
 
 persistent_directory = "db/chroma_db"
 
 # Load embeddings and vector store
-embedding_model = NomicEmbeddings(model="nomic-embed-text-v1.5")
+embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
 db = Chroma(
     persist_directory=persistent_directory,
@@ -20,13 +20,13 @@ query = "What was NVIDIA's first graphics accelerator called?"
 
 retriever = db.as_retriever(search_kwargs={"k": 5})
 
-# retriever = db.as_retriever(
-#     search_type="similarity_score_threshold",
-#     search_kwargs={
-#         "k": 5,
-#         "score_threshold": 0.3  # Only return chunks with cosine similarity ≥ 0.3
-#     }
-# )
+retriever = db.as_retriever(
+    search_type="similarity_score_threshold",
+    search_kwargs={
+        "k": 5,
+        "score_threshold": 0.3  # Only return chunks with cosine similarity ≥ 0.3
+    }
+)
 
 relevant_docs = retriever.invoke(query)
 
